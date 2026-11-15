@@ -82,10 +82,11 @@ function marksStrip() {
   const big = MODS.filter((x) => x.marks >= 20);
   let h = '<div class="marks" aria-label="Marks distribution"><div class="marks-head">Marks distribution</div><div class="marks-grid">';
   MODS.forEach((x, i) => {
-    h += '<a class="mk' + (x.marks >= 20 ? " big" : "") + (i === cur ? " on" : "") + '" href="#' + x.id + '" data-go="' + x.id + '" title="' + esc(x.title) + '"><b>' + x.id.toUpperCase() + "</b><span>" + x.marks + "</span></a>";
+    h += '<a class="mk' + (x.marks >= 20 ? " big" : "") + (i === cur ? " on" : "") + '" href="#' + x.id + '" data-go="' + x.id + '" title="' + esc(x.title) + '"><b>' + x.id.toUpperCase() + "</b><span>" + x.marks + "</span>" + (x.choice ? "<em>+ Choice</em>" : "") + "</a>";
   });
   h += "</div>";
-  if (big.length) h += '<p class="marks-note">Modules ' + big.map((x) => x.id.slice(1)).join(", ") + " carry 20 marks, the rest carry 10. Any 2 of the 20-mark modules will have a choice.</p>";
+  const ch = MODS.filter((x) => x.choice);
+  if (big.length) h += '<p class="marks-note">Modules ' + big.map((x) => x.id.slice(1)).join(", ") + " carry 20 marks" + (ch.length ? ", modules " + ch.map((x) => x.id.slice(1)).join(" and ") + " carry 10 marks plus a choice" : "") + ".</p>";
   return h + "</div>";
 }
 function renderCloud(term) {
@@ -104,7 +105,7 @@ function renderCloud(term) {
   const b = plain ? [] : filterTopics(m.priority2, term);
   let h = overallCard() + marksStrip();
   h += "<h1>" + m.id.toUpperCase() + " – " + esc(m.title) + "</h1>";
-  h += '<div class="stat">' + (m.marks ? '<span class="pill marks-pill' + (m.marks >= 20 ? " big" : "") + '">' + m.marks + " marks</span>" : "") + (plain ? '<span class="pill">' + (m.priority1.length + m.priority2.length) + " topics</span>" : '<span class="pill">' + m.priority1.length + ' must prepare</span><span class="pill">' + m.priority2.length + " important</span>") + '<span class="pill study-only">' + dn + " / " + allT.length + ' done</span></div><div class="bar"><i style="width:' + Math.round((dn / allT.length) * 100) + '%"></i></div>';
+  h += '<div class="stat">' + (m.marks ? '<span class="pill marks-pill' + (m.marks >= 20 ? " big" : "") + '">' + m.marks + (m.choice ? " + choice" : "") + " marks</span>" : "") + (plain ? '<span class="pill">' + (m.priority1.length + m.priority2.length) + " topics</span>" : '<span class="pill">' + m.priority1.length + ' must prepare</span><span class="pill">' + m.priority2.length + " important</span>") + '<span class="pill study-only">' + dn + " / " + allT.length + ' done</span></div><div class="bar"><i style="width:' + Math.round((dn / allT.length) * 100) + '%"></i></div>';
   if (a.length) h += (plain ? "" : '<span class="chip p1">Priority 1 – Must prepare</span>') + (plain ? '<div style="height:var(--s2)"></div>' : "") + topicTable(a, plain, m.id);
   if (b.length) h += '<span class="chip p2">Priority 2 – Important</span>' + topicTable(b, false, m.id);
   if (!a.length && !b.length) h += '<p class="none">No topics in ' + m.id.toUpperCase() + " match “" + esc(q.value.trim()) + "”.</p>";
@@ -164,7 +165,7 @@ function renderFat(term) {
 
 /* ---------- imp view: handwritten important-topics photo ---------- */
 function renderImp() {
-  bodyEl.innerHTML = '<h1>Important</h1><p class="sub">Important topics and notes for this subject.</p><p class="none">Coming soon. Nothing has been added yet.</p>';
+  bodyEl.innerHTML = '<h1>Important</h1><p class="md-label">Marks distribution</p><div class="md-row"><div class="mdt"><span>M1</span><b>10</b></div><div class="mdt big"><span>M2</span><b>20</b></div><div class="mdt big"><span>M3</span><b>20</b></div><div class="mdt big"><span>M4</span><b>20</b></div><div class="mdt"><span>M5</span><b>10</b></div><div class="mdt"><span>M6</span><b>10</b><em>+ Choice</em></div><div class="mdt"><span>M7</span><b>10</b><em>+ Choice</em></div></div><div class="imp-text"><p>M1 - 10 - Theory and PEAS</p><p>M2 - 20 - Searching</p><p>M3 - 20 - Hill/GA/Minmax/Alpha beta</p><p>M4 - 20 - Logic</p><p>M5 - 10 - Baye’s Theorem/Bayesian Networks</p><p>M6 - 10 + Choice - Planning</p><p>M7 - 10 + Choice - Applications</p></div>';
 }
 
 /* ---------- fluid tabs: sliding active + hover pills ---------- */

@@ -259,3 +259,16 @@ body::before { content: ""; position: fixed; inset: -10%; z-index: 0; pointer-ev
 :root:not([data-mode="study"]) button.qn { pointer-events: none; cursor: default; }
 @media (max-width: 560px) { .model { font-size: 0; gap: 0; } .seg button { padding: 7px 11px; font-size: 12px; } .seg { margin-right: 0; } }
 
+
+/* imp: marks distribution bar + exact text */
+.md-label { font-size: 13px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); margin: var(--s3) 0 var(--s2); }
+.md-row { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: var(--s4); }
+.mdt { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; width: 108px; height: 108px; border-radius: var(--r-md); background: var(--bg-elevated); box-shadow: var(--sh); color: var(--text-primary); }
+.mdt span { font-size: 14px; font-weight: 600; color: var(--text-muted); }
+.mdt b { font-size: 34px; line-height: 1; font-weight: 700; letter-spacing: -0.04em; }
+.mdt em { font-style: normal; font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-top: -2px; }
+.mdt.big { background: #93a8e0; color: #0b0b0c; } .mdt.big span { color: #26346b; }
+.imp-text p { margin: 0 0 var(--s1); font-size: 17px; font-weight: 500; color: var(--text-primary); }
+@media (max-width: 560px) { .mdt { width: calc(25% - 9px); height: 92px; } .mdt b { font-size: 28px; } }
+
+.mk em { position: relative; font-style: normal; font-size: 10px; font-weight: 600; margin-top: -2px; }
