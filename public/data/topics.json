@@ -1,0 +1,433 @@
+[
+ {
+  "id": "m1",
+  "hours": 6,
+  "topics": [
+   {
+    "topic": "Classification / Types of AI",
+    "refs": [
+     "E1-Q1"
+    ]
+   },
+   {
+    "topic": "Applications and Subfields of AI",
+    "refs": [
+     "D1-Q1"
+    ]
+   },
+   {
+    "topic": "Intelligent Agents – PEAS",
+    "refs": [
+     "B1-Q1(a)",
+     "D2-Q1"
+    ]
+   },
+   {
+    "topic": "Goal-Based Agents",
+    "refs": [
+     "B1-Q1(b)"
+    ]
+   },
+   {
+    "topic": "AI Environments and Environment Properties",
+    "refs": [
+     "E2-Q1",
+     "D1-Q1",
+     "D2-Q1"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "m2",
+  "hours": 6,
+  "topics": [
+   {
+    "topic": "State Space Search",
+    "refs": [
+     "B1-Q2",
+     "E2-Q2"
+    ]
+   },
+   {
+    "topic": "Depth First Search (DFS)",
+    "refs": [
+     "B1-Q2",
+     "D1-Q2",
+     "E2-Q3"
+    ]
+   },
+   {
+    "topic": "Breadth First Search (BFS)",
+    "refs": [
+     "E2-Q3"
+    ]
+   },
+   {
+    "topic": "Uniform Cost Search (UCS)",
+    "refs": [
+     "D1-Q2",
+     "D2-Q2",
+     "E1-Q9(a)(ii)"
+    ]
+   },
+   {
+    "topic": "Iterative Deepening DFS (IDDFS)",
+    "refs": [
+     "D1-Q2"
+    ]
+   },
+   {
+    "topic": "Greedy Best First Search (GBFS)",
+    "refs": [
+     "B1-Q3",
+     "D1-Q3",
+     "D2-Q3",
+     "E1-Q9(a)(i)"
+    ]
+   },
+   {
+    "topic": "A* Search",
+    "refs": [
+     "B1-Q3",
+     "D1-Q3",
+     "D2-Q3",
+     "E1-Q9(b)"
+    ]
+   },
+   {
+    "topic": "Comparison of Uninformed Search Algorithms",
+    "refs": [
+     "D2-Q2",
+     "E2-Q3"
+    ]
+   },
+   {
+    "topic": "Forward Search",
+    "refs": [
+     "E2-Q6"
+    ]
+   },
+   {
+    "topic": "Backward Search",
+    "refs": [
+     "E2-Q6"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "m3",
+  "hours": 5,
+  "topics": [
+   {
+    "topic": "Hill Climbing Search",
+    "refs": [
+     "B1-Q12",
+     "D2-Q5"
+    ]
+   },
+   {
+    "topic": "Simulated Annealing",
+    "refs": [
+     "B1-Q12",
+     "E2-Q4"
+    ]
+   },
+   {
+    "topic": "Genetic Algorithm (GA)",
+    "refs": [
+     "D2-Q5",
+     "E2-Q5"
+    ]
+   },
+   {
+    "topic": "Minimax Algorithm",
+    "refs": [
+     "B1-Q4",
+     "D1-Q4",
+     "D2-Q4",
+     "E2-Q4",
+     "E1-Q10(a)"
+    ]
+   },
+   {
+    "topic": "Alpha-Beta Pruning",
+    "refs": [
+     "B1-Q4",
+     "D1-Q4",
+     "D2-Q4",
+     "E2-Q4",
+     "E1-Q10(a)",
+     "E1-Q10(b)"
+    ]
+   },
+   {
+    "topic": "Limitations of Minimax",
+    "refs": [
+     "E1-Q10(a)"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "m4",
+  "hours": 8,
+  "topics": [
+   {
+    "topic": "Propositional Logic",
+    "refs": [
+     "B1-Q11(b)",
+     "E1-Q2",
+     "E2-Q9(b)"
+    ]
+   },
+   {
+    "topic": "First-Order Logic (FOL)",
+    "refs": [
+     "B1-Q5",
+     "D1-Q6",
+     "D2-Q6(a)",
+     "E1-Q3",
+     "E2-Q9(a)"
+    ]
+   },
+   {
+    "topic": "Inference Rules / Laws of Inference",
+    "refs": [
+     "B1-Q11(a)",
+     "D1-Q5(a)",
+     "E1-Q2"
+    ]
+   },
+   {
+    "topic": "Forward Chaining",
+    "refs": [
+     "B1-Q5",
+     "D1-Q5(b)",
+     "D2-Q6(b)",
+     "E1-Q2"
+    ]
+   },
+   {
+    "topic": "Backward Chaining",
+    "refs": [
+     "D2-Q6(a)",
+     "E1-Q2"
+    ]
+   },
+   {
+    "topic": "Resolution",
+    "refs": [
+     "B1-Q5",
+     "D1-Q6",
+     "D2-Q6(a)",
+     "E1-Q3",
+     "E2-Q9(a)"
+    ]
+   },
+   {
+    "topic": "Unification",
+    "refs": [
+     "D2-Q6(b)"
+    ]
+   },
+   {
+    "topic": "Truth Table / Tautology",
+    "refs": [
+     "B1-Q11(b)",
+     "E2-Q9(b)"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "m5",
+  "hours": 5,
+  "topics": [
+   {
+    "topic": "Bayes Rule / Bayes' Theorem",
+    "refs": [
+     "B1-Q6(a)",
+     "B1-Q6(b)",
+     "D1-Q7",
+     "D2-Q7",
+     "E1-Q4"
+    ]
+   },
+   {
+    "topic": "Law of Total Probability",
+    "refs": [
+     "D1-Q7",
+     "D2-Q7",
+     "E1-Q4"
+    ]
+   },
+   {
+    "topic": "Bayesian Networks",
+    "refs": [
+     "B1-Q7",
+     "E1-Q5",
+     "E2-Q10(b)"
+    ]
+   },
+   {
+    "topic": "Bayesian Network – Joint Probability",
+    "refs": [
+     "B1-Q7",
+     "E1-Q5"
+    ]
+   },
+   {
+    "topic": "Bayesian Network – Conditional Probability",
+    "refs": [
+     "B1-Q7",
+     "E1-Q5",
+     "E2-Q10(b)"
+    ]
+   },
+   {
+    "topic": "Naive Bayes Classification",
+    "refs": [
+     "D1-Q8",
+     "E1-Q4"
+    ]
+   },
+   {
+    "topic": "Approximate / Probabilistic Inference",
+    "refs": [
+     "D2-Q7",
+     "E1-Q5",
+     "E2-Q10(a)"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "m6",
+  "hours": 7,
+  "topics": [
+   {
+    "topic": "Classical Planning",
+    "refs": [
+     "B1-Q9",
+     "D1-Q9(a)",
+     "D2-Q9(b)",
+     "E1-Q6"
+    ]
+   },
+   {
+    "topic": "Planning as State-Space Search",
+    "refs": [
+     "B1-Q9",
+     "E2-Q2"
+    ]
+   },
+   {
+    "topic": "STRIPS Representation",
+    "refs": [
+     "B1-Q9",
+     "D1-Q9(a)",
+     "D1-Q9(b)",
+     "D2-Q9(b)",
+     "E1-Q6"
+    ]
+   },
+   {
+    "topic": "STRIPS – Preconditions and Effects",
+    "refs": [
+     "B1-Q9",
+     "D1-Q9(a)",
+     "D1-Q9(b)",
+     "D2-Q9(b)",
+     "E1-Q6"
+    ]
+   },
+   {
+    "topic": "Forward and Backward Planning",
+    "refs": [
+     "D2-Q9(a)"
+    ]
+   },
+   {
+    "topic": "Partial-Order Planning",
+    "refs": [
+     "D1-Q9(a)"
+    ]
+   },
+   {
+    "topic": "Hierarchical Task Network (HTN) Planning",
+    "refs": [
+     "B1-Q8",
+     "D1-Q9(b)",
+     "E1-Q7"
+    ]
+   },
+   {
+    "topic": "Planning in Nondeterministic Domains",
+    "refs": [
+     "B1-Q9(b)",
+     "E1-Q7"
+    ]
+   },
+   {
+    "topic": "Multiagent Planning",
+    "refs": [
+     "E2-Q7"
+    ]
+   },
+   {
+    "topic": "Planning in Continuous Environments",
+    "refs": [
+     "E2-Q7"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "m7",
+  "hours": 6,
+  "topics": [
+   {
+    "topic": "Natural Language Processing (NLP)",
+    "refs": [
+     "B1-Q10",
+     "D2-Q10(a)"
+    ]
+   },
+   {
+    "topic": "Information Retrieval (IR)",
+    "refs": [
+     "D1-Q10(a)",
+     "E1-Q8",
+     "D2-Q10(b)"
+    ]
+   },
+   {
+    "topic": "Information Extraction (IE)",
+    "refs": [
+     "B1-Q10",
+     "D2-Q10(b)"
+    ]
+   },
+   {
+    "topic": "Probabilistic Language Models",
+    "refs": [
+     "D2-Q10(a)"
+    ]
+   },
+   {
+    "topic": "Image Retrieval",
+    "refs": [
+     "E2-Q8"
+    ]
+   },
+   {
+    "topic": "Object Recognition",
+    "refs": [
+     "D1-Q10(b)"
+    ]
+   }
+  ]
+ }
+]

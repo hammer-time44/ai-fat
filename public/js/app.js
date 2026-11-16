@@ -1,5 +1,5 @@
 // Frontend logic: loads data from the backend API, then renders the cloud view (modules m1-m8)
-// and the FAT view (papers A1, A2, F1, G1, G2). Routing uses the URL hash: #m3, #fat-g1.
+// and the FAT view (papers A1, A2, F1, G1, G2). Routing uses the URL hash: #m3, #fat-g1, and the topic-wise view (#topic-m1).
 import { Api } from "./api.js";
 
 const tabsEl = document.getElementById("tabs");
@@ -7,7 +7,9 @@ const bodyEl = document.getElementById("body");
 const titleEl = document.getElementById("title");
 const backEl = document.getElementById("back");
 const fatEl = document.getElementById("fatBtn");
+const topicEl = document.getElementById("topicBtn");
 const impEl = document.getElementById("impBtn");
+const topEl = document.querySelector(".top");
 const heroEl = document.getElementById("hero");
 const tabsRowEl = document.getElementById("tabsRow");
 const scrollEl = document.getElementById("scroll");
@@ -22,6 +24,9 @@ function setCount(n, term) {
 let READY = false;
 let MODS = [];
 let PAPERS = [];
+let TOPICS = [];
+let curT = 0;
+let pendingQ = null;
 let view = "cloud";
 let cur = 0;
 let curP = 0;
@@ -64,12 +69,37 @@ function overallCard() {
   return '<div class="overall"><div class="ring"><svg width="72" height="72" viewBox="0 0 72 72" fill="none" stroke-width="7" stroke-linecap="round"><circle class="t" cx="36" cy="36" r="30"/><circle class="p" cx="36" cy="36" r="30" stroke-dasharray="' + (pct * C).toFixed(1) + " " + C.toFixed(1) + '"/></svg><b>' + Math.round(pct * 100) + '%</b></div><div class="ov-t"><span>Topics done</span><strong>' + done + " / " + total + '</strong></div><div class="ov-m">' + bars + "</div></div>";
 }
 
+/* Ticking a topic / question updates just that card and the progress widgets, so the page does not re-render or re-animate. */
+function applyDone(btn) {
+  const on = !!DONE[btn.getAttribute("data-done")];
+  btn.setAttribute("aria-pressed", String(on));
+  const card = btn.closest(".tc, .q");
+  if (card) card.classList.toggle("done", on);
+  if (view !== "cloud" || !MODS[cur]) return;
+  const t = document.createElement("div");
+  t.innerHTML = overallCard();
+  const o = bodyEl.querySelector(".overall");
+  if (o) {
+    const set = (sel, fn) => { const a = o.querySelectorAll(sel), b = t.querySelectorAll(sel); a.forEach((el, i) => b[i] && fn(el, b[i])); };
+    set(".ring circle.p", (a, b) => a.setAttribute("stroke-dasharray", b.getAttribute("stroke-dasharray")));
+    set(".ring b", (a, b) => (a.textContent = b.textContent));
+    set(".ov-t strong", (a, b) => (a.textContent = b.textContent));
+    set(".ov-b u", (a, b) => (a.style.width = b.style.width));
+  }
+  const m = MODS[cur], all = m.priority1.concat(m.priority2);
+  const dn = all.filter((r) => isDone(topicKey(m.id, r))).length;
+  const pill = bodyEl.querySelector(".pill.study-only");
+  if (pill) pill.textContent = dn + " / " + all.length + " done";
+  const bar = bodyEl.querySelector(".bar i");
+  if (bar) bar.style.width = Math.round((dn / all.length) * 100) + "%";
+}
+
 /* ---------- cloud view ---------- */
 function topicTable(rows, plain, mid) {
   let h = '<div class="tg">';
   rows.forEach((r) => {
     const k = topicKey(mid, r);
-    h += '<article class="tc' + (isDone(k) ? " done" : "") + '"><button class="chk" type="button" data-done="' + attr(k) + '" aria-pressed="' + isDone(k) + '" aria-label="Mark ' + attr(r.topic) + ' as done"></button>' + (plain ? "" : '<span class="pr ' + priorityClass(r.priority) + '">' + esc(r.priority) + "</span>") + "<h3 class=\"tc-t\">" + esc(r.topic) + '</h3><p class="tc-i">' + esc(r.importance) + "</p></article>";
+    h += '<article class="tc' + (isDone(k) ? " done" : "") + '"><button class="chk" type="button" data-done="' + attr(k) + '" aria-pressed="' + isDone(k) + '" aria-label="Mark ' + attr(r.topic) + ' as done"></button>' + (plain ? "" : '<span class="pr ' + priorityClass(r.priority) + '">' + esc(r.priority) + "</span>") + "<h3 class=\"tc-t\">" + (r.link ? '<a class="tc-lk" href="#topic-' + mid + '" data-tl="' + attr(mid + "|" + r.link) + '" title="View questions on this topic">' + esc(r.topic) + "<i>→</i></a>" : esc(r.topic)) + '</h3><p class="tc-i">' + esc(r.importance) + "</p>" + "</article>";
   });
   return h + "</div>";
 }
@@ -148,7 +178,7 @@ function renderFat(term) {
     if (term && !matchQuestion(question, term)) return;
     shown++;
     const qk = "q:" + p.id.toLowerCase() + ":" + question.number;
-    list += '<li class="q' + (isDone(qk) ? " done" : "") + '"><button class="qn" type="button" data-done="' + qk + '" aria-pressed="' + isDone(qk) + '" aria-label="Mark question ' + question.number + ' as solved">' + question.number + '</button><div class="qb">';
+    list += '<li class="q' + (isDone(qk) ? " done" : "") + '" data-qn="' + question.number + '"><button class="qn" type="button" data-done="' + qk + '" aria-pressed="' + isDone(qk) + '" aria-label="Mark question ' + question.number + ' as solved">' + question.number + '</button><div class="qb">';
     question.parts.forEach((part, j) => {
       if (j > 0 && !part.and) list += '<div class="or">OR</div>';
       list += partHtml(part);
@@ -161,6 +191,115 @@ function renderFat(term) {
   setCount(shown, term);
   bodyEl.innerHTML = h;
   markTabs(curP);
+}
+
+/* ---------- topic-wise view: module -> topics -> the exact problems asked ---------- */
+function resolveRef(ref) {
+  const m = String(ref).match(/^([A-Za-z]\d)-Q(\d+)(?:\(([a-z])\))?(?:\(([ivx]+)\))?$/i);
+  if (!m) return null;
+  const paper = PAPERS.find((p) => p.id.toLowerCase() === m[1].toLowerCase());
+  const question = paper && paper.questions.find((x) => x.number === Number(m[2]));
+  if (!question) return null;
+  let parts = question.parts;
+  if (m[3]) {
+    const hit = parts.filter((p) => String(p.label).toLowerCase() === m[3].toLowerCase());
+    if (hit.length) parts = hit;
+  }
+  return { paper, question, parts, label: "Q" + m[2] + (m[3] ? "(" + m[3].toLowerCase() + ")" : "") + (m[4] ? "(" + m[4].toLowerCase() + ")" : "") };
+}
+function topicProblems(t) {
+  const seen = new Set(), out = [];
+  t.refs.forEach((r) => {
+    const x = resolveRef(r);
+    if (!x || seen.has(r.toLowerCase())) return;
+    seen.add(r.toLowerCase());
+    out.push(x);
+  });
+  return out;
+}
+function problemHtml(x) {
+  const id = x.paper.id.toLowerCase();
+  let h = '<li class="q" data-paper="' + id + '"><span class="qn">' + x.question.number + '</span><div class="qb"><div class="pb-h"><span class="pb-ref">' + esc(x.paper.id) + " · " + esc(x.label) + '</span><a class="mchip pb-open" href="#fat-' + id + '" data-go="fat-' + id + '" data-q="' + x.question.number + '">Open</a></div>';
+  x.parts.forEach((part, j) => {
+    if (j > 0 && !part.and) h += '<div class="or">OR</div>';
+    h += partHtml(part);
+  });
+  return h + "</div></li>";
+}
+function allProblems(m) {
+  const out = [], seen = new Set();
+  m.topics.forEach((t) => topicProblems(t).forEach((x) => {
+    const k = x.paper.id + ":" + x.question.number + ":" + x.parts.map((p) => p.label).join(",");
+    if (!seen.has(k)) { seen.add(k); out.push(x); }
+  }));
+  const whole = new Set(out.filter((x) => x.parts.length === x.question.parts.length).map((x) => x.paper.id + x.question.number));
+  return out
+    .filter((x) => x.parts.length === x.question.parts.length || !whole.has(x.paper.id + x.question.number))
+    .sort((a, b) => PAPERS.indexOf(a.paper) - PAPERS.indexOf(b.paper) || a.question.number - b.question.number);
+}
+const SEL = {};
+/* A topic card on the home page opens that topic in the topic-wise view ("m2|A* Search"). */
+function openTopic(ref) {
+  const [mid, name] = ref.split("|");
+  const m = TOPICS.find((x) => x.id === mid);
+  if (!m) return;
+  const i = m.topics.findIndex((t) => t.topic === name);
+  if (i !== -1) SEL[mid] = i;
+  q.value = "";
+  go("topic-" + mid);
+}
+function selectTopic(v) {
+  SEL[TOPICS[curT].id] = v;
+  render();
+  const t = bodyEl.querySelector(".tchip[aria-selected=true]");
+  if (t && t.scrollIntoView) t.scrollIntoView({ block: "nearest", behavior: "auto" });
+}
+/* Left / Right arrow keys: next / previous module (cloud view) or topic (topic-wise view). */
+function arrowStep(dir) {
+  if (view === "cloud" && MODS.length) {
+    const n = cur + dir;
+    if (n >= 0 && n < MODS.length) go(MODS[n].id);
+  } else if (view === "topic") {
+    const chips = Array.from(bodyEl.querySelectorAll("[data-tsel]"));
+    const i = chips.findIndex((c) => c.getAttribute("aria-selected") === "true");
+    const n = chips[i + dir];
+    if (n) selectTopic(Number(n.dataset.tsel));
+  }
+}
+function renderTopic(term) {
+  delete bodyEl.dataset.paper;
+  const m = TOPICS[curT];
+  if (!m) { countEl.hidden = true; bodyEl.innerHTML = '<p class="none">No topic-wise data yet.</p>'; return; }
+  const mod = MODS.find((x) => x.id === m.id) || { title: "", marks: 0 };
+  const all = m.topics.map((t, i) => ({ t, i, probs: topicProblems(t) }));
+  const rows = all.filter((e) => !term || (e.t.topic + " " + e.t.refs.join(" ") + " " + e.probs.map((x) => x.parts.map((p) => p.text).join(" ")).join(" ")).toLowerCase().includes(term));
+  let h = "<h1>" + m.id.toUpperCase() + " – " + esc(mod.title) + "</h1>";
+  const marksPill = mod.marks ? '<span class="pill marks-pill' + (mod.marks >= 20 ? " big" : "") + '">' + mod.marks + (mod.choice ? " + choice" : "") + " marks</span>" : "";
+  if (!rows.length) {
+    h += '<div class="stat">' + marksPill + "</div>";
+    h += '<p class="none">No topics in ' + m.id.toUpperCase() + " match “" + esc(q.value.trim()) + "”.</p>";
+    setCount(0, term); bodyEl.innerHTML = h; markTabs(curT); return;
+  }
+  const isAll = SEL[m.id] === undefined || SEL[m.id] === -1 || !rows.some((e) => e.i === SEL[m.id]);
+  const sel = isAll ? null : rows.find((e) => e.i === SEL[m.id]);
+  let probs;
+  if (sel) probs = sel.probs;
+  else {
+    const keep = new Set(rows.map((e) => e.t));
+    probs = allProblems({ topics: m.topics.filter((t) => keep.has(t)) });
+  }
+  const nAll = sel ? allProblems({ topics: rows.map((e) => e.t) }).length : probs.length;
+  h += '<div class="stat" role="tablist">' + marksPill + '<button type="button" role="tab" class="tchip all" data-tsel="-1" aria-selected="' + isAll + '">All<i>' + nAll + "</i></button></div>";
+  h += '<div class="tchips" role="tablist" aria-label="Topics">';
+  rows.forEach((e) => {
+    h += '<button type="button" role="tab" class="tchip" data-tsel="' + e.i + '" aria-selected="' + (e === sel) + '">' + esc(e.t.topic) + "<i>" + e.probs.length + "</i></button>";
+  });
+  h += "</div>";
+  h += '<div class="tsel"><h2>' + (sel ? esc(sel.t.topic) : "All topics") + '</h2><span class="pill">' + probs.length + (probs.length === 1 ? " question" : " questions") + "</span></div>";
+  h += '<ol class="qs tq">' + probs.map(problemHtml).join("") + "</ol>";
+  setCount(rows.length, term);
+  bodyEl.innerHTML = h;
+  markTabs(curT);
 }
 
 /* ---------- imp view: handwritten important-topics photo ---------- */
@@ -218,7 +357,7 @@ function buildTabs() {
   pillHov = document.createElement("span"); pillHov.className = "tab-pill hov"; pillHov.setAttribute("aria-hidden", "true");
   pillAct = document.createElement("span"); pillAct.className = "tab-pill act"; pillAct.setAttribute("aria-hidden", "true");
   tabsEl.append(pillHov, pillAct);
-  const labels = view === "fat" ? PAPERS.map((p) => p.id) : MODS.map((m) => m.id);
+  const labels = view === "fat" ? PAPERS.map((p) => p.id) : view === "topic" ? TOPICS.map((m) => m.id) : MODS.map((m) => m.id);
   tabsEl.setAttribute("aria-label", view === "fat" ? "Question papers" : "Modules");
   labels.forEach((label) => {
     const t = document.createElement("button");
@@ -228,14 +367,14 @@ function buildTabs() {
     t.textContent = label;
     if (view === "fat") t.dataset.paper = label.toLowerCase();
     const mod = view === "fat" ? null : MODS.find((x) => x.id === label);
-    if (mod && mod.marks) {
+    if (view === "topic" && mod && mod.marks) {
       const sm = document.createElement("small");
       sm.className = "tab-marks";
       sm.textContent = mod.marks;
       sm.title = mod.marks + " marks";
       t.appendChild(sm);
     }
-    t.onclick = () => go(view === "fat" ? "fat-" + label.toLowerCase() : label);
+    t.onclick = () => go(view === "fat" ? "fat-" + label.toLowerCase() : view === "topic" ? "topic-" + label : label);
     tabsEl.appendChild(t);
   });
 }
@@ -245,26 +384,37 @@ function render() {
     buildTabs();
     builtView = view;
   }
-  titleEl.textContent = view === "fat" ? "fat" : view === "imp" ? "imp" : "ai";
+  titleEl.textContent = view === "fat" ? "fat" : view === "imp" ? "imp" : view === "topic" ? "topic-wise" : "ai";
+  tabsRowEl.dataset.view = view;
   tabsEl.hidden = !tabList().length;
   heroEl.hidden = view !== "cloud";
   backEl.hidden = view === "cloud";
-  fatEl.hidden = view !== "cloud";
-  impEl.hidden = view !== "cloud";
+  fatEl.hidden = view === "fat";
+  topicEl.hidden = view === "topic";
+  impEl.hidden = view === "imp";
+  { const kw = document.getElementById("keysWrap"); kw.hidden = view !== "imp"; if (view !== "imp") { document.getElementById("keysMenu").hidden = true; document.getElementById("keysBtn").setAttribute("aria-expanded", "false"); } }
+  topEl.dataset.ghost = view === "cloud" ? "" : "1";
+  if (view === "cloud") [fatEl, topicEl, impEl].forEach((b) => b.style.removeProperty("--near"));
   tabsRowEl.hidden = view === "imp";
   if (view === "imp") {
     countEl.hidden = true;
     q.placeholder = "Search is available on the cloud and fat pages";
     return renderImp();
   }
-  q.placeholder = view === "fat" ? "Search by question no. (Q5) or text, e.g. STRIPS, Bayes, A*" : MODS.length ? "Search topics, e.g. A*, Bayes, STRIPS" : "Search is available on the fat page";
+  q.placeholder = view === "topic" ? "Search topics or questions, e.g. A*, Bayes, STRIPS" : view === "fat" ? "Search by question no. (Q5) or text, e.g. STRIPS, Bayes, A*" : MODS.length ? "Search topics, e.g. A*, Bayes, STRIPS" : "Search is available on the fat page";
   if (view === "fat") renderFat(term);
+  else if (view === "topic") renderTopic(term);
   else renderCloud(term);
 }
 function parse(hash) {
   const h = (hash || "").replace("#", "").toLowerCase();
   if (h === "imp") {
     view = "imp";
+  } else if (h.startsWith("topic")) {
+    view = "topic";
+    const id = h.split("-")[1];
+    const i = TOPICS.findIndex((m) => m.id === id);
+    curT = i === -1 ? 0 : i;
   } else if (h.startsWith("fat")) {
     view = "fat";
     const id = h.split("-")[1];
@@ -285,6 +435,11 @@ function go(hash) {
   } catch (e) {}
   render();
   scrollEl.scrollTop = 0;
+  if (pendingQ && view === "fat") {
+    const el = bodyEl.querySelector('.q[data-qn="' + pendingQ + '"]');
+    if (el) el.scrollIntoView({ block: "start", behavior: STILL ? "auto" : "smooth" });
+  }
+  pendingQ = null;
 }
 
 /* ---------- theme ---------- */
@@ -335,24 +490,54 @@ async function init() {
     render();
     q.focus();
   };
+  const keysBtn = document.getElementById("keysBtn"), keysMenu = document.getElementById("keysMenu"), keysWrap = document.getElementById("keysWrap");
+  const setKeys = (open) => { keysMenu.hidden = !open; keysBtn.setAttribute("aria-expanded", String(open)); };
+  const canHover = () => window.matchMedia("(hover: hover)").matches;
+  keysBtn.onclick = (e) => { e.stopPropagation(); setKeys(canHover() ? true : keysMenu.hidden); };
+  keysWrap.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse") setKeys(true); });
+  keysWrap.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse") setKeys(false); });
+  document.addEventListener("click", (e) => { if (!keysMenu.hidden && !keysWrap.contains(e.target)) setKeys(false); });
   document.addEventListener("keydown", (e) => {
     const typing = /^(INPUT|TEXTAREA)$/.test((document.activeElement || {}).tagName || "");
+    if (e.key === "?" && view === "imp" && !typing && !e.metaKey && !e.ctrlKey && !e.altKey) { e.preventDefault(); setKeys(keysMenu.hidden); return; }
+    if (e.key === "Escape" && !keysMenu.hidden) { e.preventDefault(); setKeys(false); keysBtn.focus(); return; }
+    if ((e.key === "Escape" || e.key === "Backspace") && !typing && !e.metaKey && !e.ctrlKey && !e.altKey && !e.shiftKey) { if (view !== "cloud") { e.preventDefault(); backEl.onclick(); } return; }
+    if ((e.key === "ArrowLeft" || e.key === "ArrowRight") && !typing && !e.metaKey && !e.ctrlKey && !e.altKey && !e.shiftKey) { e.preventDefault(); arrowStep(e.key === "ArrowRight" ? 1 : -1); return; }
     if (e.key === "/" && !typing && !e.metaKey && !e.ctrlKey) { e.preventDefault(); q.focus(); }
     else if (e.key === "Escape" && document.activeElement === q) { q.value = ""; render(); q.blur(); }
   });
   fatEl.onclick = () => go("fat-" + (PAPERS.length ? PAPERS[0].id.toLowerCase() : "b1"));
+  topicEl.onclick = () => go("topic-" + (TOPICS.length ? TOPICS[0].id : "m1"));
   impEl.onclick = () => go("imp");
-  backEl.onclick = () => go(view === "imp" && MODS[cur] ? MODS[cur].id : "m1");
+  backEl.onclick = () => go(view === "imp" && MODS[cur] ? MODS[cur].id : view === "topic" && TOPICS[curT] ? TOPICS[curT].id : "m1");
   bodyEl.addEventListener("click", (e) => {
     const dbtn = e.target.closest ? e.target.closest("[data-done]") : null;
     if (dbtn && MODE !== "study") return;
-    if (dbtn) { toggleDone(dbtn.getAttribute("data-done")); render(); return; }
+    if (dbtn) { toggleDone(dbtn.getAttribute("data-done")); applyDone(dbtn); return; }
+    const tl = e.target.closest ? e.target.closest("[data-tl]") : null;
+    if (tl && view === "cloud") { e.preventDefault(); openTopic(tl.getAttribute("data-tl")); return; }
+    const ts = e.target.closest ? e.target.closest("[data-tsel]") : null;
+    if (ts && view === "topic") { selectTopic(Number(ts.dataset.tsel)); return; }
     const a = e.target.closest ? e.target.closest("a[data-go]") : null;
     if (a) {
       e.preventDefault();
+      pendingQ = a.getAttribute("data-q");
       go(a.getAttribute("data-go"));
     }
   });
+  /* On the fat / topic-wise / imp pages the page-switch buttons stay invisible (but clickable) and fade in as the pointer gets close. */
+  const ghosts = [fatEl, topicEl, impEl, keysBtn];
+  document.addEventListener("pointermove", (e) => {
+    if (!topEl.dataset.ghost || e.pointerType === "touch") return;
+    ghosts.forEach((b) => {
+      if (b.hidden) return;
+      const r = b.getBoundingClientRect();
+      const dx = Math.max(r.left - e.clientX, 0, e.clientX - r.right), dy = Math.max(r.top - e.clientY, 0, e.clientY - r.bottom);
+      const n = Math.max(0, 1 - Math.hypot(dx, dy) / 190);
+      b.style.setProperty("--near", (n * n * (3 - 2 * n)).toFixed(3));
+    });
+  });
+  document.addEventListener("pointerleave", () => ghosts.forEach((b) => b.style.setProperty("--near", "0")));
   document.addEventListener("pointermove", (e) => {
     const c = e.target.closest ? e.target.closest(".tc, .q, .mk") : null;
     if (c) { const r = c.getBoundingClientRect(); c.style.setProperty("--mx", e.clientX - r.left + "px"); c.style.setProperty("--my", e.clientY - r.top + "px"); }
@@ -364,7 +549,7 @@ async function init() {
   });
 
   try {
-    [MODS, PAPERS] = await Promise.all([Api.modules(), Api.papers()]);
+    [MODS, PAPERS, TOPICS] = await Promise.all([Api.modules(), Api.papers(), Api.topics()]);
     READY = true;
   } catch (e) {
     bodyEl.innerHTML = '<p class="none err">Could not load data from the backend. Start it with <code>npm start</code> and open <code>http://localhost:3000</code>.</p>';

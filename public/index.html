@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#000000">
   <meta name="description" content="BCSE306L Artificial Intelligence: module priorities and FAT question papers.">
-  <title>Artificial Intelligence: FAT Question Papers</title>
+  <title>AI</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <script>
     /* Set theme + mode before first paint so there is no flash. */
@@ -19,6 +19,7 @@
   <link rel="modulepreload" href="js/api.js">
   <link rel="preload" href="data/modules.json" as="fetch" crossorigin="anonymous">
   <link rel="preload" href="data/papers.json" as="fetch" crossorigin="anonymous">
+  <link rel="preload" href="data/topics.json" as="fetch" crossorigin="anonymous">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap">
@@ -38,9 +39,25 @@
           <button type="button" data-mode="view" aria-pressed="true">View</button>
           <button type="button" data-mode="study" aria-pressed="false">Study</button>
         </div>
+        <div class="keys-wrap" id="keysWrap" hidden>
+          <button class="fat-btn" id="keysBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="keysMenu" aria-label="Keyboard shortcuts" title="Keyboard shortcuts (?)">keys</button>
+          <div class="keys-menu" id="keysMenu" role="menu" aria-label="Keyboard shortcuts" hidden>
+            <div class="keys-title">Shortcuts</div>
+            <ul>
+              <li><span>Search</span><kbd>/</kbd></li>
+              <li><span>Clear search / leave box</span><kbd>Esc</kbd></li>
+              <li><span>Go back</span><kbd>Esc</kbd><kbd>Backspace</kbd></li>
+              <li><span>Next module / topic</span><kbd>&rarr;</kbd></li>
+              <li><span>Previous module / topic</span><kbd>&larr;</kbd></li>
+              <li><span>Show this menu</span><kbd>?</kbd></li>
+            </ul>
+            <div class="keys-note">Back and arrow keys work when you are not typing in the search box.</div>
+          </div>
+        </div>
         <button class="fat-btn" id="fatBtn" type="button" aria-label="Open FAT question papers">fat</button>
+        <button class="fat-btn topic-btn" id="topicBtn" type="button" aria-label="Open topic-wise question list">topic-wise</button>
         <button class="imp-btn" id="impBtn" type="button" aria-label="Open important notice">imp</button>
-        <button class="icon-btn" id="theme" aria-label="Switch to light mode" title="Toggle theme"></button>
+                <button class="icon-btn" id="theme" aria-label="Switch to light mode" title="Toggle theme"></button>
         </div>
         <div class="col">
           <header class="hero" id="hero"><span class="eyebrow"><i></i>BCSE306L · Artificial Intelligence</span></header>
