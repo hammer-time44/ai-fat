@@ -148,7 +148,7 @@ function renderCloud(term) {
 /* ---------- FAT view ---------- */
 function questionText(question) {
   return question.parts
-    .map((p) => [p.text, p.co, p.bl, (p.modules || []).join(" ")].join(" "))
+    .map((p) => [String(p.text).replace(/\{\{fig:[\w-]+\}\}/g, " "), p.co, p.bl, (p.modules || []).join(" ")].join(" "))
     .join(" ")
     .toLowerCase();
 }
@@ -158,14 +158,34 @@ function matchQuestion(question, term) {
   if (/^\d+$/.test(term) && question.number === Number(term)) return true;
   return questionText(question).includes(term);
 }
-function partHtml(p) {
-  let h = '<div class="part"><p>' + (p.label ? '<span class="pl">' + esc(p.label) + "</span>" : "") + esc(p.text) + '</p><div class="meta">';
+const imgSrc = (kind, name) => "papers/" + kind + "/" + name + ".jpg";
+/* Question text keeps the paper's own line breaks; {{fig:NAME}} drops in the exact diagram cut from the paper. */
+function richText(text, label) {
+  const segs = String(text).split(/\{\{fig:([\w-]+)\}\}/);
+  let h = "", pending = label ? '<span class="pl">' + esc(label) + "</span>" : "";
+  segs.forEach((seg, i) => {
+    if (i % 2) {
+      if (pending) { h += "<p>" + pending + "</p>"; pending = ""; }
+      h += '<figure class="fig"><img src="' + imgSrc("fig", seg) + '" alt="Figure from the question paper" loading="lazy" decoding="async"></figure>';
+    } else {
+      const s = seg.replace(/^\n+|\n+$/g, "");
+      if (s) { h += "<p>" + pending + esc(s) + "</p>"; pending = ""; }
+    }
+  });
+  return pending ? "<p>" + pending + "</p>" : h;
+}
+function paperBtn(pid, label, a, cls) {
+  return '<button type="button" class="paper-open' + (cls ? " " + cls : "") + '" data-pv="' + esc(pid) + "|" + a.pg + "|" + a.y + "|" + esc(label) + '" title="Open the original paper at this question">paper</button>';
+}
+function partHtml(p, chip) {
+  let h = '<div class="part">' + richText(p.text, p.label) + '<div class="meta">';
   if (p.co) h += '<span class="tag">' + esc(p.co) + "</span>";
   if (p.bl) h += '<span class="tag">' + esc(p.bl) + "</span>";
   if (p.marks) h += '<span class="tag">' + esc(p.marks) + " marks</span>";
   (p.modules || []).forEach((k) => {
     h += '<a class="mchip" href="#' + k + '" data-go="' + k + '" title="' + esc(moduleTitle(k)) + '">' + k + "</a>";
   });
+  if (chip) h += paperBtn(chip.pid, chip.label, chip.a);
   return h + "</div></div>";
 }
 function renderFat(term) {
@@ -181,7 +201,8 @@ function renderFat(term) {
     list += '<li class="q' + (isDone(qk) ? " done" : "") + '" data-qn="' + question.number + '"><button class="qn" type="button" data-done="' + qk + '" aria-pressed="' + isDone(qk) + '" aria-label="Mark question ' + question.number + ' as solved">' + question.number + '</button><div class="qb">';
     question.parts.forEach((part, j) => {
       if (j > 0 && !part.and) list += '<div class="or">OR</div>';
-      list += partHtml(part);
+      const anchor = part.pg ? part : j === 0 ? question : null;
+      list += partHtml(part, anchor ? { pid: p.id, label: "Q" + question.number + (part.label ? "(" + part.label + ")" : ""), a: anchor } : null);
     });
     list += "</div></li>";
   });
@@ -192,6 +213,59 @@ function renderFat(term) {
   bodyEl.innerHTML = h;
   markTabs(curP);
 }
+
+/* ---------- original-paper viewer: opens over the page, scrolled to the question ---------- */
+let pvEl = null, pvState = null;
+function pvBuild() {
+  pvEl = document.createElement("div");
+  pvEl.className = "pv"; pvEl.hidden = true;
+  pvEl.innerHTML = '<div class="pv-panel" role="dialog" aria-modal="true" aria-label="Original question paper">' +
+    '<div class="pv-bar"><span class="pv-title"></span><button type="button" class="pv-btn" data-pvs="-1" aria-label="Previous page">&larr;</button><span class="pv-pg"></span><button type="button" class="pv-btn" data-pvs="1" aria-label="Next page">&rarr;</button><button type="button" class="pv-btn pv-x" aria-label="Close paper">&times;</button></div>' +
+    '<div class="pv-scroll"><div class="pv-page"><img alt="Scanned question paper page" decoding="async"><span class="pv-mark"></span></div></div></div>';
+  document.body.appendChild(pvEl);
+  pvEl.addEventListener("click", (e) => {
+    if (e.target === pvEl || e.target.closest(".pv-x")) { pvClose(); return; }
+    const s = e.target.closest("[data-pvs]");
+    if (s) pvStep(Number(s.getAttribute("data-pvs")));
+  });
+  pvEl.querySelector("img").addEventListener("load", pvPlace);
+}
+function pvOpen() { return !!pvEl && !pvEl.hidden; }
+function pvShow() {
+  const s = pvState, paper = PAPERS.find((p) => p.id === s.pid);
+  const img = pvEl.querySelector("img"), mark = pvEl.querySelector(".pv-mark");
+  pvEl.querySelector(".pv-title").textContent = s.pid + " · " + s.label;
+  pvEl.querySelector(".pv-pg").textContent = "page " + s.pg + " / " + paper.pages;
+  pvEl.querySelector('[data-pvs="-1"]').disabled = s.pg <= 1;
+  pvEl.querySelector('[data-pvs="1"]').disabled = s.pg >= paper.pages;
+  mark.hidden = s.y == null; mark.textContent = s.label.split("(")[0];
+  img.src = imgSrc("pages", s.pid + "-" + s.pg);
+  if (img.complete && img.naturalHeight) pvPlace();
+  else pvEl.querySelector(".pv-scroll").scrollTop = 0;
+}
+function pvPlace() {
+  const s = pvState; if (!s) return;
+  const sc = pvEl.querySelector(".pv-scroll"), img = pvEl.querySelector("img");
+  if (s.y == null) { sc.scrollTop = 0; return; }
+  const y = s.y * img.clientHeight;
+  pvEl.querySelector(".pv-mark").style.top = y + "px";
+  sc.scrollTop = Math.max(0, y - 80);
+}
+function openPaper(spec) {
+  const a = spec.split("|");
+  if (!pvEl) pvBuild();
+  pvState = { pid: a[0], pg: Number(a[1]), y: Number(a[2]), label: a[3] };
+  pvEl.hidden = false; document.documentElement.classList.add("pv-lock");
+  pvShow();
+  pvEl.querySelector(".pv-x").focus();
+}
+function pvStep(d) {
+  const paper = PAPERS.find((p) => p.id === pvState.pid), n = pvState.pg + d;
+  if (n < 1 || n > paper.pages) return;
+  pvState = { pid: pvState.pid, pg: n, y: null, label: pvState.label.split("(")[0] };
+  pvShow();
+}
+function pvClose() { pvEl.hidden = true; document.documentElement.classList.remove("pv-lock"); }
 
 /* ---------- topic-wise view: module -> topics -> the exact problems asked ---------- */
 function resolveRef(ref) {
@@ -219,7 +293,7 @@ function topicProblems(t) {
 }
 function problemHtml(x) {
   const id = x.paper.id.toLowerCase();
-  let h = '<li class="q" data-paper="' + id + '"><span class="qn">' + x.question.number + '</span><div class="qb"><div class="pb-h"><span class="pb-ref">' + esc(x.paper.id) + " · " + esc(x.label) + '</span><a class="mchip pb-open" href="#fat-' + id + '" data-go="fat-' + id + '" data-q="' + x.question.number + '">Open</a></div>';
+  let h = '<li class="q" data-paper="' + id + '"><span class="qn">' + x.question.number + '</span><div class="qb"><div class="pb-h"><span class="pb-ref">' + esc(x.paper.id) + " · " + esc(x.label) + '</span>' + paperBtn(x.paper.id, x.label, x.parts[0].pg ? x.parts[0] : x.question, "pb-paper") + '<a class="mchip pb-open" href="#fat-' + id + '" data-go="fat-' + id + '" data-q="' + x.question.number + '">Open</a></div>';
   x.parts.forEach((part, j) => {
     if (j > 0 && !part.and) h += '<div class="or">OR</div>';
     h += partHtml(part);
@@ -501,6 +575,12 @@ async function init() {
   keysWrap.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse") setKeys(false); });
   document.addEventListener("click", (e) => { if (!keysMenu.hidden && !keysWrap.contains(e.target)) setKeys(false); });
   document.addEventListener("keydown", (e) => {
+    if (pvOpen()) {
+      if (e.key === "Escape") { e.preventDefault(); pvClose(); }
+      else if (e.key === "ArrowRight") { e.preventDefault(); pvStep(1); }
+      else if (e.key === "ArrowLeft") { e.preventDefault(); pvStep(-1); }
+      return;
+    }
     const typing = /^(INPUT|TEXTAREA)$/.test((document.activeElement || {}).tagName || "");
     if (e.key === "?" && view === "imp" && !typing && !e.metaKey && !e.ctrlKey && !e.altKey) { e.preventDefault(); setKeys(keysMenu.hidden); return; }
     if (e.key === "Escape" && !keysMenu.hidden) { e.preventDefault(); setKeys(false); keysBtn.focus(); return; }
@@ -514,6 +594,8 @@ async function init() {
   impEl.onclick = () => go("imp");
   backEl.onclick = () => go(view === "imp" && MODS[cur] ? MODS[cur].id : view === "topic" && TOPICS[curT] ? TOPICS[curT].id : "m1");
   bodyEl.addEventListener("click", (e) => {
+    const pvb = e.target.closest ? e.target.closest("[data-pv]") : null;
+    if (pvb) { openPaper(pvb.getAttribute("data-pv")); return; }
     const dbtn = e.target.closest ? e.target.closest("[data-done]") : null;
     if (dbtn && MODE !== "study") return;
     if (dbtn) { toggleDone(dbtn.getAttribute("data-done")); applyDone(dbtn); return; }
