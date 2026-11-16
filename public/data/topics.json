@@ -123,8 +123,7 @@
    {
     "topic": "Hill Climbing Search",
     "refs": [
-     "B1-Q12",
-     "D2-Q5"
+     "B1-Q12"
     ]
    },
    {
@@ -147,7 +146,6 @@
      "B1-Q4",
      "D1-Q4",
      "D2-Q4",
-     "E2-Q4",
      "E1-Q10(a)"
     ]
    },
@@ -157,7 +155,6 @@
      "B1-Q4",
      "D1-Q4",
      "D2-Q4",
-     "E2-Q4",
      "E1-Q10(a)",
      "E1-Q10(b)"
     ]
@@ -205,14 +202,14 @@
     "refs": [
      "B1-Q5",
      "D1-Q5(b)",
-     "D2-Q6(b)",
+     "D2-Q7(a)",
      "E1-Q2"
     ]
    },
    {
     "topic": "Backward Chaining",
     "refs": [
-     "D2-Q6(a)",
+     "D2-Q7(a)",
      "E1-Q2"
     ]
    },
@@ -221,7 +218,7 @@
     "refs": [
      "B1-Q5",
      "D1-Q6",
-     "D2-Q6(a)",
+     "D2-Q6(b)",
      "E1-Q3",
      "E2-Q9(a)"
     ]
@@ -229,7 +226,7 @@
    {
     "topic": "Unification",
     "refs": [
-     "D2-Q6(b)"
+     "D2-Q7(b)"
     ]
    },
    {
@@ -251,7 +248,7 @@
      "B1-Q6(a)",
      "B1-Q6(b)",
      "D1-Q7",
-     "D2-Q7",
+     "D2-Q8",
      "E1-Q4"
     ]
    },
@@ -259,7 +256,7 @@
     "topic": "Law of Total Probability",
     "refs": [
      "D1-Q7",
-     "D2-Q7",
+     "D2-Q8",
      "E1-Q4"
     ]
    },
@@ -296,7 +293,6 @@
    {
     "topic": "Approximate / Probabilistic Inference",
     "refs": [
-     "D2-Q7",
      "E1-Q5",
      "E2-Q10(a)"
     ]
@@ -319,8 +315,7 @@
    {
     "topic": "Planning as State-Space Search",
     "refs": [
-     "B1-Q9",
-     "E2-Q2"
+     "B1-Q9"
     ]
    },
    {

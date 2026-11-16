@@ -254,11 +254,14 @@ function selectTopic(v) {
   const t = bodyEl.querySelector(".tchip[aria-selected=true]");
   if (t && t.scrollIntoView) t.scrollIntoView({ block: "nearest", behavior: "auto" });
 }
-/* Left / Right arrow keys: next / previous module (cloud view) or topic (topic-wise view). */
+/* Left / Right arrow keys: next / previous module (cloud view), paper (fat view) or topic (topic-wise view). */
 function arrowStep(dir) {
   if (view === "cloud" && MODS.length) {
     const n = cur + dir;
     if (n >= 0 && n < MODS.length) go(MODS[n].id);
+  } else if (view === "fat" && PAPERS.length) {
+    const n = curP + dir;
+    if (n >= 0 && n < PAPERS.length) go("fat-" + PAPERS[n].id.toLowerCase());
   } else if (view === "topic") {
     const chips = Array.from(bodyEl.querySelectorAll("[data-tsel]"));
     const i = chips.findIndex((c) => c.getAttribute("aria-selected") === "true");

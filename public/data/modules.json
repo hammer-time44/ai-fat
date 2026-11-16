@@ -1,289 +1,289 @@
 [
-  {
-    "id": "m1",
-    "title": "Introduction",
-    "priority1": [
-      {
-        "topic": "PEAS Representation",
-        "importance": "Repeated in 3 papers",
-        "priority": "High",
-        "link": "Intelligent Agents – PEAS"
-      },
-      {
-        "topic": "Environment Properties",
-        "importance": "Repeated in 3 papers",
-        "priority": "High",
-        "link": "AI Environments and Environment Properties"
-      }
-    ],
-    "priority2": [
-      {
-        "topic": "Types / Classification of AI",
-        "importance": "Repeated in 1 paper",
-        "priority": "Medium",
-        "link": "Classification / Types of AI"
-      },
-      {
-        "topic": "AI Subfields and Applications",
-        "importance": "Repeated in 1 paper",
-        "priority": "Medium",
-        "link": "Applications and Subfields of AI"
-      },
-      {
-        "topic": "Agent Architecture / Goal-Based Agents",
-        "importance": "Repeated in 1 paper",
-        "priority": "Medium",
-        "link": "Goal-Based Agents"
-      }
-    ],
-    "marks": 10
-  },
-  {
-    "id": "m2",
-    "title": "Problem Solving Based on Searching",
-    "priority1": [
-      {
-        "topic": "Greedy Best First Search",
-        "importance": "Repeated in 4 papers",
-        "priority": "Very High",
-        "link": "Greedy Best First Search (GBFS)"
-      },
-      {
-        "topic": "A* Search",
-        "importance": "Repeated in 4 papers",
-        "priority": "Very High",
-        "link": "A* Search"
-      },
-      {
-        "topic": "DFS",
-        "importance": "Repeated in 3 papers",
-        "priority": "High",
-        "link": "Depth First Search (DFS)"
-      },
-      {
-        "topic": "Uniform Cost Search (UCS)",
-        "importance": "Repeated in 3 papers",
-        "priority": "High",
-        "link": "Uniform Cost Search (UCS)"
-      }
-    ],
-    "priority2": [
-      {
-        "topic": "BFS",
-        "importance": "Repeated in 1 paper",
-        "priority": "Medium",
-        "link": "Breadth First Search (BFS)"
-      },
-      {
-        "topic": "Iterative Deepening DFS",
-        "importance": "Repeated in 1 paper",
-        "priority": "Medium",
-        "link": "Iterative Deepening DFS (IDDFS)"
-      },
-      {
-        "topic": "Search Algorithm Comparison",
-        "importance": "Repeated in 2 papers",
-        "priority": "Medium",
-        "link": "Comparison of Uninformed Search Algorithms"
-      }
-    ],
-    "marks": 20
-  },
-  {
-    "id": "m3",
-    "title": "Local Search and Adversarial Search",
-    "priority1": [
-      {
-        "topic": "Minimax Algorithm",
-        "importance": "Repeated in 4 papers",
-        "priority": "Very High",
-        "link": "Minimax Algorithm"
-      },
-      {
-        "topic": "Alpha-Beta Pruning",
-        "importance": "Repeated in 4 papers",
-        "priority": "Very High",
-        "link": "Alpha-Beta Pruning"
-      }
-    ],
-    "priority2": [
-      {
-        "topic": "Hill Climbing",
-        "importance": "Repeated in 2 papers",
-        "priority": "Medium",
-        "link": "Hill Climbing Search"
-      },
-      {
-        "topic": "Simulated Annealing",
-        "importance": "Repeated in 2 papers",
-        "priority": "Medium",
-        "link": "Simulated Annealing"
-      },
-      {
-        "topic": "Genetic Algorithm",
-        "importance": "Repeated in 2 papers",
-        "priority": "Medium",
-        "link": "Genetic Algorithm (GA)"
-      }
-    ],
-    "marks": 20
-  },
-  {
-    "id": "m4",
-    "title": "Logic and Reasoning",
-    "priority1": [
-      {
-        "topic": "First Order Logic (FOL)",
-        "importance": "Repeated in 5 papers",
-        "priority": "Very High",
-        "link": "First-Order Logic (FOL)"
-      },
-      {
-        "topic": "Resolution",
-        "importance": "Repeated in 4 papers",
-        "priority": "Very High",
-        "link": "Resolution"
-      },
-      {
-        "topic": "Forward Chaining",
-        "importance": "Repeated in 3 papers",
-        "priority": "High",
-        "link": "Forward Chaining"
-      },
-      {
-        "topic": "Propositional Logic",
-        "importance": "Repeated in 3 papers",
-        "priority": "High",
-        "link": "Propositional Logic"
-      }
-    ],
-    "priority2": [
-      {
-        "topic": "Backward Chaining",
-        "importance": "Repeated in 1 paper",
-        "priority": "Medium",
-        "link": "Backward Chaining"
-      },
-      {
-        "topic": "Unification",
-        "importance": "Repeated in 1 paper",
-        "priority": "Medium",
-        "link": "Unification"
-      }
-    ],
-    "marks": 20
-  },
-  {
-    "id": "m5",
-    "title": "Uncertain Knowledge and Reasoning",
-    "priority1": [
-      {
-        "topic": "Bayes’ Theorem",
-        "importance": "Repeated in 3 papers",
-        "priority": "High",
-        "link": "Bayes Rule / Bayes' Theorem"
-      },
-      {
-        "topic": "Bayesian Belief Networks",
-        "importance": "Repeated in 3 papers",
-        "priority": "High",
-        "link": "Bayesian Networks"
-      },
-      {
-        "topic": "Probability Laws / Conditional Probability",
-        "importance": "Repeated in 3 papers",
-        "priority": "High",
-        "link": "Law of Total Probability"
-      }
-    ],
-    "priority2": [
-      {
-        "topic": "Naive Bayes Classifier",
-        "importance": "Repeated in 2 papers",
-        "priority": "Medium",
-        "link": "Naive Bayes Classification"
-      }
-    ],
-    "marks": 10
-  },
-  {
-    "id": "m6",
-    "title": "Planning",
-    "priority1": [],
-    "priority2": [
-      {
-        "topic": "STRIPS Representation",
-        "importance": "Repeated in 2 papers",
-        "priority": "Medium",
-        "link": "STRIPS Representation"
-      },
-      {
-        "topic": "Hierarchical Task Network (HTN)",
-        "importance": "Repeated in 2 papers",
-        "priority": "Medium",
-        "link": "Hierarchical Task Network (HTN) Planning"
-      },
-      {
-        "topic": "Nondeterministic Planning",
-        "importance": "Repeated in 2 papers",
-        "priority": "Medium",
-        "link": "Planning in Nondeterministic Domains"
-      },
-      {
-        "topic": "Blocks World",
-        "importance": "Repeated in 1 paper",
-        "priority": "Medium",
-        "link": "STRIPS Representation"
-      },
-      {
-        "topic": "Multiagent Planning",
-        "importance": "Repeated in 1 paper",
-        "priority": "Medium",
-        "link": "Multiagent Planning"
-      }
-    ],
-    "plain": true,
-    "marks": 10,
-    "choice": true
-  },
-  {
-    "id": "m7",
-    "title": "Communicating, Perceiving and Acting",
-    "priority1": [],
-    "priority2": [
-      {
-        "topic": "Natural Language Processing (NLP)",
-        "importance": "Repeated in 1 paper",
-        "priority": "Medium",
-        "link": "Natural Language Processing (NLP)"
-      },
-      {
-        "topic": "Information Retrieval / Image Retrieval",
-        "importance": "Repeated in 1 paper",
-        "priority": "Medium",
-        "link": "Information Retrieval (IR)"
-      },
-      {
-        "topic": "Information Extraction",
-        "importance": "No clear repeat yet*",
-        "priority": "Medium",
-        "link": "Information Extraction (IE)"
-      },
-      {
-        "topic": "Image Formation",
-        "importance": "No clear repeat yet*",
-        "priority": "Medium"
-      },
-      {
-        "topic": "Object Recognition",
-        "importance": "No clear repeat yet*",
-        "priority": "Medium",
-        "link": "Object Recognition"
-      }
-    ],
-    "note": "*No clearly established repeat in the preliminary analysis; zero does not mean the topic is absent from the syllabus.",
-    "plain": true,
-    "marks": 10,
-    "choice": true
-  }
+ {
+  "id": "m1",
+  "title": "Introduction",
+  "priority1": [
+   {
+    "topic": "PEAS Representation",
+    "importance": "Repeated in 3 papers",
+    "priority": "High",
+    "link": "Intelligent Agents – PEAS"
+   },
+   {
+    "topic": "Environment Properties",
+    "importance": "Repeated in 3 papers",
+    "priority": "High",
+    "link": "AI Environments and Environment Properties"
+   }
+  ],
+  "priority2": [
+   {
+    "topic": "Types / Classification of AI",
+    "importance": "Repeated in 1 paper",
+    "priority": "Medium",
+    "link": "Classification / Types of AI"
+   },
+   {
+    "topic": "AI Subfields and Applications",
+    "importance": "Repeated in 1 paper",
+    "priority": "Medium",
+    "link": "Applications and Subfields of AI"
+   },
+   {
+    "topic": "Agent Architecture / Goal-Based Agents",
+    "importance": "Repeated in 1 paper",
+    "priority": "Medium",
+    "link": "Goal-Based Agents"
+   }
+  ],
+  "marks": 10
+ },
+ {
+  "id": "m2",
+  "title": "Problem Solving Based on Searching",
+  "priority1": [
+   {
+    "topic": "Greedy Best First Search",
+    "importance": "Repeated in 4 papers",
+    "priority": "Very High",
+    "link": "Greedy Best First Search (GBFS)"
+   },
+   {
+    "topic": "A* Search",
+    "importance": "Repeated in 4 papers",
+    "priority": "Very High",
+    "link": "A* Search"
+   },
+   {
+    "topic": "DFS",
+    "importance": "Repeated in 3 papers",
+    "priority": "High",
+    "link": "Depth First Search (DFS)"
+   },
+   {
+    "topic": "Uniform Cost Search (UCS)",
+    "importance": "Repeated in 3 papers",
+    "priority": "High",
+    "link": "Uniform Cost Search (UCS)"
+   }
+  ],
+  "priority2": [
+   {
+    "topic": "BFS",
+    "importance": "Repeated in 1 paper",
+    "priority": "Medium",
+    "link": "Breadth First Search (BFS)"
+   },
+   {
+    "topic": "Iterative Deepening DFS",
+    "importance": "Repeated in 1 paper",
+    "priority": "Medium",
+    "link": "Iterative Deepening DFS (IDDFS)"
+   },
+   {
+    "topic": "Search Algorithm Comparison",
+    "importance": "Repeated in 2 papers",
+    "priority": "Medium",
+    "link": "Comparison of Uninformed Search Algorithms"
+   }
+  ],
+  "marks": 20
+ },
+ {
+  "id": "m3",
+  "title": "Local Search and Adversarial Search",
+  "priority1": [
+   {
+    "topic": "Minimax Algorithm",
+    "importance": "Repeated in 4 papers",
+    "priority": "Very High",
+    "link": "Minimax Algorithm"
+   },
+   {
+    "topic": "Alpha-Beta Pruning",
+    "importance": "Repeated in 4 papers",
+    "priority": "Very High",
+    "link": "Alpha-Beta Pruning"
+   }
+  ],
+  "priority2": [
+   {
+    "topic": "Hill Climbing",
+    "importance": "Repeated in 1 paper",
+    "priority": "Medium",
+    "link": "Hill Climbing Search"
+   },
+   {
+    "topic": "Simulated Annealing",
+    "importance": "Repeated in 2 papers",
+    "priority": "Medium",
+    "link": "Simulated Annealing"
+   },
+   {
+    "topic": "Genetic Algorithm",
+    "importance": "Repeated in 2 papers",
+    "priority": "Medium",
+    "link": "Genetic Algorithm (GA)"
+   }
+  ],
+  "marks": 20
+ },
+ {
+  "id": "m4",
+  "title": "Logic and Reasoning",
+  "priority1": [
+   {
+    "topic": "First Order Logic (FOL)",
+    "importance": "Repeated in 5 papers",
+    "priority": "Very High",
+    "link": "First-Order Logic (FOL)"
+   },
+   {
+    "topic": "Resolution",
+    "importance": "Repeated in 4 papers",
+    "priority": "Very High",
+    "link": "Resolution"
+   },
+   {
+    "topic": "Forward Chaining",
+    "importance": "Repeated in 3 papers",
+    "priority": "High",
+    "link": "Forward Chaining"
+   },
+   {
+    "topic": "Propositional Logic",
+    "importance": "Repeated in 3 papers",
+    "priority": "High",
+    "link": "Propositional Logic"
+   }
+  ],
+  "priority2": [
+   {
+    "topic": "Backward Chaining",
+    "importance": "Repeated in 1 paper",
+    "priority": "Medium",
+    "link": "Backward Chaining"
+   },
+   {
+    "topic": "Unification",
+    "importance": "Repeated in 1 paper",
+    "priority": "Medium",
+    "link": "Unification"
+   }
+  ],
+  "marks": 20
+ },
+ {
+  "id": "m5",
+  "title": "Uncertain Knowledge and Reasoning",
+  "priority1": [
+   {
+    "topic": "Bayes’ Theorem",
+    "importance": "Repeated in 3 papers",
+    "priority": "High",
+    "link": "Bayes Rule / Bayes' Theorem"
+   },
+   {
+    "topic": "Bayesian Belief Networks",
+    "importance": "Repeated in 3 papers",
+    "priority": "High",
+    "link": "Bayesian Networks"
+   },
+   {
+    "topic": "Probability Laws / Conditional Probability",
+    "importance": "Repeated in 3 papers",
+    "priority": "High",
+    "link": "Law of Total Probability"
+   }
+  ],
+  "priority2": [
+   {
+    "topic": "Naive Bayes Classifier",
+    "importance": "Repeated in 2 papers",
+    "priority": "Medium",
+    "link": "Naive Bayes Classification"
+   }
+  ],
+  "marks": 10
+ },
+ {
+  "id": "m6",
+  "title": "Planning",
+  "priority1": [],
+  "priority2": [
+   {
+    "topic": "STRIPS Representation",
+    "importance": "Repeated in 2 papers",
+    "priority": "Medium",
+    "link": "STRIPS Representation"
+   },
+   {
+    "topic": "Hierarchical Task Network (HTN)",
+    "importance": "Repeated in 2 papers",
+    "priority": "Medium",
+    "link": "Hierarchical Task Network (HTN) Planning"
+   },
+   {
+    "topic": "Nondeterministic Planning",
+    "importance": "Repeated in 2 papers",
+    "priority": "Medium",
+    "link": "Planning in Nondeterministic Domains"
+   },
+   {
+    "topic": "Blocks World",
+    "importance": "Repeated in 1 paper",
+    "priority": "Medium",
+    "link": "STRIPS Representation"
+   },
+   {
+    "topic": "Multiagent Planning",
+    "importance": "Repeated in 1 paper",
+    "priority": "Medium",
+    "link": "Multiagent Planning"
+   }
+  ],
+  "plain": true,
+  "marks": 10,
+  "choice": true
+ },
+ {
+  "id": "m7",
+  "title": "Communicating, Perceiving and Acting",
+  "priority1": [],
+  "priority2": [
+   {
+    "topic": "Natural Language Processing (NLP)",
+    "importance": "Repeated in 1 paper",
+    "priority": "Medium",
+    "link": "Natural Language Processing (NLP)"
+   },
+   {
+    "topic": "Information Retrieval / Image Retrieval",
+    "importance": "Repeated in 1 paper",
+    "priority": "Medium",
+    "link": "Information Retrieval (IR)"
+   },
+   {
+    "topic": "Information Extraction",
+    "importance": "No clear repeat yet*",
+    "priority": "Medium",
+    "link": "Information Extraction (IE)"
+   },
+   {
+    "topic": "Image Formation",
+    "importance": "No clear repeat yet*",
+    "priority": "Medium"
+   },
+   {
+    "topic": "Object Recognition",
+    "importance": "No clear repeat yet*",
+    "priority": "Medium",
+    "link": "Object Recognition"
+   }
+  ],
+  "note": "*No clearly established repeat in the preliminary analysis; zero does not mean the topic is absent from the syllabus.",
+  "plain": true,
+  "marks": 10,
+  "choice": true
+ }
 ]
