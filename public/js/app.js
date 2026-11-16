@@ -159,6 +159,18 @@ function matchQuestion(question, term) {
   return questionText(question).includes(term);
 }
 const imgSrc = (kind, name) => "papers/" + kind + "/" + name + ".jpg";
+const pdfSrc = (id) => "papers/pdf/" + id + ".pdf";
+/* Double-click a paper tab (B1, D1, ...) to open the original PDF in a new tab. */
+function openPdf(id) {
+  const w = window.open("about:blank", "_blank");
+  let u = pdfSrc(id);
+  if (u.startsWith("data:")) {
+    const bin = atob(u.slice(u.indexOf(",") + 1)), buf = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) buf[i] = bin.charCodeAt(i);
+    u = URL.createObjectURL(new Blob([buf], { type: "application/pdf" }));
+  }
+  if (w) w.location.href = u; else window.location.href = u;
+}
 /* Question text keeps the paper's own line breaks; {{fig:NAME}} drops in the exact diagram cut from the paper. */
 function richText(text, label) {
   const segs = String(text).split(/\{\{fig:([\w-]+)\}\}/);
@@ -169,7 +181,12 @@ function richText(text, label) {
       h += '<figure class="fig"><img src="' + imgSrc("fig", seg) + '" alt="Figure from the question paper" loading="lazy" decoding="async"></figure>';
     } else {
       const s = seg.replace(/^\n+|\n+$/g, "");
-      if (s) { h += "<p>" + pending + esc(s) + "</p>"; pending = ""; }
+      s.split(/(?:^|\n)((?:\|[^\n]*(?:\n|$))+)/).forEach((c, k) => {
+        if (k % 2) {
+          const rows = c.trim().split("\n").map((r) => r.replace(/^\||\|$/g, "").split("|").map((x) => x.trim()));
+          h += '<div class="qt-wrap"><table class="qt"><thead><tr>' + rows[0].map((x) => "<th>" + esc(x) + "</th>").join("") + "</tr></thead><tbody>" + rows.slice(1).map((r) => "<tr>" + r.map((x) => "<td>" + esc(x) + "</td>").join("") + "</tr>").join("") + "</tbody></table></div>";
+        } else if (c.trim()) { h += "<p>" + pending + esc(c.replace(/^\n+|\n+$/g, "")) + "</p>"; pending = ""; }
+      });
     }
   });
   return pending ? "<p>" + pending + "</p>" : h;
@@ -416,6 +433,10 @@ function initTabFx() {
     pillHov.style.opacity = t.getAttribute("aria-selected") === "true" ? "0" : "1";
   });
   tabsEl.addEventListener("pointerleave", () => { if (pillHov) pillHov.style.opacity = "0"; });
+  tabsEl.addEventListener("dblclick", (e) => {
+    const t = e.target.closest ? e.target.closest(".tab") : null;
+    if (t && view === "fat" && t.dataset.paper) { e.preventDefault(); openPdf(t.dataset.paper.toUpperCase()); }
+  });
   tabsEl.addEventListener("pointermove", (e) => {
     if (STILL || e.pointerType === "touch") return;
     tabList().forEach((t) => {
@@ -452,6 +473,7 @@ function buildTabs() {
       t.appendChild(sm);
     }
     t.onclick = () => go(view === "fat" ? "fat-" + label.toLowerCase() : view === "topic" ? "topic-" + label : label);
+    if (view === "fat") t.title = "Double-click to open the original PDF";
     tabsEl.appendChild(t);
   });
 }

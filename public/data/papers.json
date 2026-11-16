@@ -370,7 +370,7 @@
     "parts": [
      {
       "label": "",
-      "text": "Using the dataset given, classify the following input into accept /reject using Bayes’ classifier.\nX=(age <40, cibil = normal, Employed=yes)\n{{fig:D1-q8}}",
+      "text": "Using the dataset given, classify the following input into accept /reject using Bayes’ classifier.\nX=(age <40, cibil = normal, Employed=yes)\n|No.|Age|Cibil|Employed|Loan|\n|1|<40|Good|Yes|accept|\n|2|>40|Good|Yes|reject|\n|3|=40|Normal|yes|reject|\n|4|<40|Bad|yes|reject|\n|5|<40|Normal|No|accept|\n|6|>40|Good|No|reject|\n|7|>40|Bad|No|reject|\n|8|=40|Normal|Yes|reject|\n|9|<40|Bad|Yes|reject.|\n|10|<40|Bad|No|accept|\n|11|=40|Good|No|accept|\n|12|>40|good|Yes|reject|",
       "co": "CO3",
       "bl": "BL3",
       "modules": []
@@ -676,7 +676,7 @@
     "parts": [
      {
       "label": "",
-      "text": "Write the naïve Bayesian classification algorithm and apply naïve Bayesian classification for the following dataset. Compute the conditional probabilities and predict the class for the new instance (A=0, B=1, C=0).\n{{fig:E1-q4}}",
+      "text": "Write the naïve Bayesian classification algorithm and apply naïve Bayesian classification for the following dataset. Compute the conditional probabilities and predict the class for the new instance (A=0, B=1, C=0).\n|Record|A|B|C|Class|\n|1|0|0|0|+|\n|2|0|0|1|−|\n|3|0|1|1|−|\n|4|0|1|1|−|\n|5|0|0|1|+|\n|6|1|0|1|+|\n|7|1|0|1|−|\n|8|1|0|1|−|\n|9|1|1|1|+|\n|10|1|0|1|+|",
       "co": "",
       "bl": "",
       "modules": []
@@ -858,7 +858,7 @@
     "parts": [
      {
       "label": "",
-      "text": "A manufacturing facility has a set of jobs to be processed on a set of machines. Each job has a specific processing time on each machine. The goal is to schedule the jobs on the machines in a way that minimizes the total completion time by using genetic algorithm.\nConsider that there are 4 jobs (A, B, C, D) and 2 machines (M1, M2). Jobs can be processed on any of the machines. For e.g., job A can be processed on either M1 or M2.\nThe processing times (in mins) for each job on each machine are given in the following table:\n{{fig:E2-q5}}\n[Hint to create the initial population: Chromosome 1: A(M1)B(M2)C(M1)D(M1). Fitness value of this is 3+4+4+5 = 16].",
+      "text": "A manufacturing facility has a set of jobs to be processed on a set of machines. Each job has a specific processing time on each machine. The goal is to schedule the jobs on the machines in a way that minimizes the total completion time by using genetic algorithm.\nConsider that there are 4 jobs (A, B, C, D) and 2 machines (M1, M2). Jobs can be processed on any of the machines. For e.g., job A can be processed on either M1 or M2.\nThe processing times (in mins) for each job on each machine are given in the following table:\n|Job|M1|M2|\n|A|3|5|\n|B|2|4|\n|C|4|2|\n|D|5|3|\n[Hint to create the initial population: Chromosome 1: A(M1)B(M2)C(M1)D(M1). Fitness value of this is 3+4+4+5 = 16].",
       "co": "",
       "bl": "",
       "modules": []

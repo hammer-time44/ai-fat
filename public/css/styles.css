@@ -355,3 +355,8 @@ a.mchip.pb-open:hover { color: var(--text-primary); border-color: var(--text-mut
 .pv-page img { display: block; width: 100%; height: auto; background: #fff; border-radius: 6px; }
 .pv-mark { position: absolute; left: -2px; transform: translateY(-50%); padding: 4px 10px; font-size: 12px; font-weight: 700; color: #1f0f08; background: var(--grad); border-radius: 0 999px 999px 0; box-shadow: 0 6px 14px -6px rgba(0,0,0,0.5); pointer-events: none; }
 .pv-mark[hidden] { display: none; }
+
+.qt-wrap { margin: 4px 0 14px; overflow-x: auto; }
+.qt { border-collapse: collapse; font-size: 15px; min-width: 260px; }
+.qt th, .qt td { border: 1px solid var(--border-strong); padding: 6px 16px; text-align: center; }
+.qt th { font-weight: 700; background: var(--accent-soft); }
