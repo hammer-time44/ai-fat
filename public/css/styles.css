@@ -360,3 +360,6 @@ a.mchip.pb-open:hover { color: var(--text-primary); border-color: var(--text-mut
 .qt { border-collapse: collapse; font-size: 15px; min-width: 260px; }
 .qt th, .qt td { border: 1px solid var(--border-strong); padding: 6px 16px; text-align: center; }
 .qt th { font-weight: 700; background: var(--accent-soft); }
+.feat-menu { width: min(340px, calc(100vw - 32px)); }
+.feat-menu li { align-items: flex-start; line-height: 1.4; }
+.feat-menu b { color: #f6f7f6; }

@@ -491,7 +491,7 @@ function render() {
   fatEl.hidden = view === "fat";
   topicEl.hidden = view === "topic";
   impEl.hidden = view === "imp";
-  { const kw = document.getElementById("keysWrap"); kw.hidden = view !== "imp"; if (view !== "imp") { document.getElementById("keysMenu").hidden = true; document.getElementById("keysBtn").setAttribute("aria-expanded", "false"); } }
+  { const kw = document.getElementById("keysWrap"); kw.hidden = view !== "imp"; document.getElementById("featWrap").hidden = view !== "imp"; if (view !== "imp") { document.getElementById("keysMenu").hidden = true; document.getElementById("keysBtn").setAttribute("aria-expanded", "false"); } }
   topEl.dataset.ghost = view === "cloud" ? "" : "1";
   if (view === "cloud") [fatEl, topicEl, impEl].forEach((b) => b.style.removeProperty("--near"));
   tabsRowEl.hidden = view === "imp";
@@ -595,6 +595,13 @@ async function init() {
   keysBtn.onclick = (e) => { e.stopPropagation(); setKeys(canHover() ? true : keysMenu.hidden); };
   keysWrap.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse") setKeys(true); });
   keysWrap.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse") setKeys(false); });
+  const featBtn = document.getElementById("featBtn"), featMenu = document.getElementById("featMenu"), featWrap = document.getElementById("featWrap");
+  const setFeat = (open) => { featMenu.hidden = !open; featBtn.setAttribute("aria-expanded", String(open)); };
+  featBtn.onclick = (e) => { e.stopPropagation(); setFeat(canHover() ? true : featMenu.hidden); };
+  featWrap.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse") setFeat(true); });
+  featWrap.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse") setFeat(false); });
+  document.addEventListener("click", (e) => { if (!featMenu.hidden && !featWrap.contains(e.target)) setFeat(false); });
+  fatEl.before(featWrap);
   document.addEventListener("click", (e) => { if (!keysMenu.hidden && !keysWrap.contains(e.target)) setKeys(false); });
   document.addEventListener("keydown", (e) => {
     if (pvOpen()) {
@@ -606,6 +613,7 @@ async function init() {
     const typing = /^(INPUT|TEXTAREA)$/.test((document.activeElement || {}).tagName || "");
     if (e.key === "?" && view === "imp" && !typing && !e.metaKey && !e.ctrlKey && !e.altKey) { e.preventDefault(); setKeys(keysMenu.hidden); return; }
     if (e.key === "Escape" && !keysMenu.hidden) { e.preventDefault(); setKeys(false); keysBtn.focus(); return; }
+    if (e.key === "Escape" && !featMenu.hidden) { e.preventDefault(); setFeat(false); featBtn.focus(); return; }
     if ((e.key === "Escape" || e.key === "Backspace") && !typing && !e.metaKey && !e.ctrlKey && !e.altKey && !e.shiftKey) { if (view !== "cloud") { e.preventDefault(); backEl.onclick(); } return; }
     if ((e.key === "ArrowLeft" || e.key === "ArrowRight") && !typing && !e.metaKey && !e.ctrlKey && !e.altKey && !e.shiftKey) { e.preventDefault(); arrowStep(e.key === "ArrowRight" ? 1 : -1); return; }
     if (e.key === "/" && !typing && !e.metaKey && !e.ctrlKey) { e.preventDefault(); q.focus(); }
@@ -633,7 +641,7 @@ async function init() {
     }
   });
   /* On the fat / topic-wise / imp pages the page-switch buttons stay invisible (but clickable) and fade in as the pointer gets close. */
-  const ghosts = [fatEl, topicEl, impEl, keysBtn];
+  const ghosts = [fatEl, topicEl, impEl, keysBtn, featBtn];
   document.addEventListener("pointermove", (e) => {
     if (!topEl.dataset.ghost || e.pointerType === "touch") return;
     ghosts.forEach((b) => {
