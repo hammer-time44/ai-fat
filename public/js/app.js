@@ -51,6 +51,15 @@ let MODE = "view";
 try { MODE = localStorage.getItem("ai-mode") === "study" ? "study" : "view"; } catch (e) {}
 document.documentElement.setAttribute("data-mode", MODE);
 const isDone = (k) => MODE === "study" && !!DONE[k];
+/* Topic-wise ticks are stored apart from the fat ticks (own storage key, own handler), so neither view affects the other. */
+let TDONE = {};
+try { TDONE = JSON.parse(localStorage.getItem("ai-done-topic") || "{}"); } catch (e) {}
+const isTDone = (k) => MODE === "study" && !!TDONE[k];
+const tqKey = (x) => "tq:" + x.paper.id.toLowerCase() + ":" + x.question.number + ":" + x.parts.map((p) => p.label).join(",");
+function toggleTDone(k) {
+  if (TDONE[k]) delete TDONE[k]; else TDONE[k] = 1;
+  try { localStorage.setItem("ai-done-topic", JSON.stringify(TDONE)); } catch (e) {}
+}
 const attr = (s) => esc(s).replace(/"/g, "&quot;");
 const topicKey = (mid, r) => "t:" + mid + ":" + r.topic;
 function toggleDone(k) {
@@ -310,7 +319,8 @@ function topicProblems(t) {
 }
 function problemHtml(x) {
   const id = x.paper.id.toLowerCase();
-  let h = '<li class="q" data-paper="' + id + '"><span class="qn">' + x.question.number + '</span><div class="qb"><div class="pb-h"><span class="pb-ref">' + esc(x.paper.id) + " · " + esc(x.label) + '</span>' + paperBtn(x.paper.id, x.label, x.parts[0].pg ? x.parts[0] : x.question, "pb-paper") + '<a class="mchip pb-open" href="#fat-' + id + '" data-go="fat-' + id + '" data-q="' + x.question.number + '">Open</a></div>';
+  const tk = tqKey(x);
+  let h = '<li class="q' + (isTDone(tk) ? " done" : "") + '" data-paper="' + id + '"><button class="qn" type="button" data-tdone="' + attr(tk) + '" aria-pressed="' + isTDone(tk) + '" aria-label="Mark question ' + x.question.number + ' as solved">' + x.question.number + '</button><div class="qb"><div class="pb-h"><span class="pb-ref">' + esc(x.paper.id) + " · " + esc(x.label) + '</span>' + paperBtn(x.paper.id, x.label, x.parts[0].pg ? x.parts[0] : x.question, "pb-paper") + '<a class="mchip pb-open" href="#fat-' + id + '" data-go="fat-' + id + '" data-q="' + x.question.number + '">Open</a></div>';
   x.parts.forEach((part, j) => {
     if (j > 0 && !part.and) h += '<div class="or">OR</div>';
     h += partHtml(part);
@@ -626,6 +636,15 @@ async function init() {
   bodyEl.addEventListener("click", (e) => {
     const pvb = e.target.closest ? e.target.closest("[data-pv]") : null;
     if (pvb) { openPaper(pvb.getAttribute("data-pv")); return; }
+    const tbtn = e.target.closest ? e.target.closest("[data-tdone]") : null;
+    if (tbtn && MODE !== "study") return;
+    if (tbtn) {
+      toggleTDone(tbtn.getAttribute("data-tdone"));
+      const on = !!TDONE[tbtn.getAttribute("data-tdone")];
+      tbtn.setAttribute("aria-pressed", String(on));
+      const li = tbtn.closest(".q"); if (li) li.classList.toggle("done", on);
+      return;
+    }
     const dbtn = e.target.closest ? e.target.closest("[data-done]") : null;
     if (dbtn && MODE !== "study") return;
     if (dbtn) { toggleDone(dbtn.getAttribute("data-done")); applyDone(dbtn); return; }
